@@ -10,3 +10,5 @@ df<-rbind(flights,flights,flights,flights,flights,flights,flights,flights,flight
 dft<-as.data.table(flights)
 
 system.time(dfp<-ddply(df,.(month,carrier,origin),summarise,delay=mean(arr_delay)))
+
+ss
