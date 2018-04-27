@@ -1,7 +1,7 @@
 data.table
 speeding up data handling in R
 ========================================================
-author: 
+author: Selina und Gregor
 date: 
 autosize: true
 
