@@ -2,12 +2,11 @@
 title: "Untitled"
 output: ioslides_presentation
 widescreen: true
+css: style.css
+
 ---
 
-```{r setup, include=FALSE}
 
-library(data.table)
-```
 ##What is data.table?
 - package released in 2008 by Matt Dowle
 main goals:
@@ -32,6 +31,7 @@ dt<-data.table(rbind(flights,flights,flights,flights,flights,flights,flights,fli
 system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_delay)))
 system.time(dt[,mean(dep_delay),.(origin,carrier,month)])
 ```
+
 
 ##Selina: Comparison data.table and data.frame
   - data.table inherits from df
@@ -75,17 +75,85 @@ DT[1:3,.(B,C)] #returns a data.table
 - column names are treated like variables --> no ""
 
 
-##Gregor
+##Summarizing data.tables{.smaller}
+```{r}
+# dt <- data.table(flights)
+```
+delay statistics:
+```{r}
+dt[,.(mean_del = mean(arr_delay, na.rm=T), sd_del = sd(arr_delay, na.rm=T))]
+```
+returns a new data table:
+```{r}
+summ_tab <- dt[,.(mean_del = mean(arr_delay, na.rm=T), sd_del = sd(arr_delay, na.rm=T))]
+str(summ_tab)
+```
 
-##Gregor
 
-##Gregor
+##Summarizing data.tables cont'd{.smaller}
 
-##Gregor
+more sophisticated delay statistics:
 
-##Gregor
+```{r}
+summ_tab <- dt[,.(mean_del = mean(arr_delay, na.rm=T), 
+                  sd_del = sd(arr_delay, na.rm=T)),
+               by = .(carrier, month, origin)]
+str(summ_tab)
+```
 
-##Gregor
+remember:
+```{r, eval=F}
+###<b>
+DT[i, j, by]
+###</b>
+```
+
+
+##Updating columns
+let's keep it simple
+```{r}
+dt[, arr_delay := round(arr_delay, 0)]
+
+dt[, c("arr_delay", "dep_delay") 
+   := list(round(arr_delay, 0),
+           round(dep_delay, 0))]
+```
+let's keep it even simpler
+```{r}
+dt[, day := NULL]
+
+dt[, c("year", "arr_time") := NULL]
+```
+
+
+
+
+##Keys{.smaller}
+the master coulmns of data.tables
+
+```{r}
+setkey(dt, carrier)
+
+head(dt["B6"])
+```
+
+
+
+##Keys cont'd{.smaller}
+```{r}
+sub_tab <- dt[c("UA", "AA")]
+
+dt["B6", mult="first"]
+```
+
+```{r}
+dt[c("UA", "AA"), mean(arr_delay, na.rm = T)]
+dt[c("UA", "AA"), mean(arr_delay, na.rm = T), by = carrier]
+```
+
+
+###Chaining
+
 
 ##Selina: Read and Write
 fread()
