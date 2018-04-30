@@ -1,5 +1,7 @@
 ---
-title: "Untitled"
+title: "data.table"
+author: Gregor and Selina
+date: May 2nd 2018
 output: ioslides_presentation
 widescreen: true
 css: style.css
@@ -25,9 +27,10 @@ main goals:
 ```{r}
 library(nycflights13)
 library(plyr)
+library(data.table)
 ```
 ```{r}
-dt<-data.table(rbind(flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights))
+dt<-data.table(do.call("rbind", replicate(5, flights, simplify = FALSE)))
 system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_delay)))
 system.time(dt[,mean(dep_delay),.(origin,carrier,month)])
 ```
