@@ -89,17 +89,139 @@
           </hgroup>
   </slide>
 
-<slide class=""><hgroup><h2>Selina</h2></hgroup><article  id="selina">
+<slide class=""><hgroup><h2>What is data.table?</h2></hgroup><article  id="what-is-data.table">
 
-</article></slide><slide class=""><hgroup><h2>Selina</h2></hgroup><article  id="selina-1">
+<ul>
+<li>package released in 2008 by Matt Dowle main goals:</li>
+<li>reduced programming time &#8211;&gt; more natural syntax</li>
+<li>less variable name repetition</li>
+<li>most things can be done in a single line of code</li>
+<li>reduced computing time</li>
+<li>fast aggreagation</li>
+<li>update by reference</li>
+</ul>
 
-</article></slide><slide class=""><hgroup><h2>Selina</h2></hgroup><article  id="selina-2">
+</article></slide><slide class=""><hgroup><h2>Why to use it?</h2></hgroup><article  id="why-to-use-it">
 
-</article></slide><slide class=""><hgroup><h2>Selina</h2></hgroup><article  id="selina-3">
+<ul>
+<li>faster read, write, data manipulation
 
-</article></slide><slide class=""><hgroup><h2>Selina</h2></hgroup><article  id="selina-4">
+<ul>
+<li>works with shallow copies and pointers (column names) and not with deep copies</li>
+</ul></li>
+</ul>
 
-</article></slide><slide class=""><hgroup><h2>Selina</h2></hgroup><article  id="selina-5">
+<pre class = 'prettyprint lang-r'>library(nycflights13)
+library(plyr)</pre>
+
+<pre class = 'prettyprint lang-r'>dt&lt;-data.table(rbind(flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights))
+system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_delay)))</pre>
+
+<pre >##    user  system elapsed 
+##    2.31    0.61    2.98</pre>
+
+<pre class = 'prettyprint lang-r'>system.time(dt[,mean(dep_delay),.(origin,carrier,month)])</pre>
+
+<pre >##    user  system elapsed 
+##    0.66    0.03    0.70</pre>
+
+</article></slide><slide class=""><hgroup><h2>Selina: Comparison data.table and data.frame</h2></hgroup><article  id="selina-comparison-data.table-and-data.frame">
+
+<ul>
+<li>data.table inherits from df &#8211;&gt;every data.table is also a data.frame and can be used in the same way -data.table is also a data.frame</li>
+<li>accepted as data.frame by other packages</li>
+<li>if called from a package that does not know how to deal with data.table syntax, the data.frame syntax is called</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>DT &lt;- data.table(A = c(1L,2L), B = LETTERS[1:3], C = round(rnorm(4),4), D = 1:12)
+DT</pre>
+
+<pre >##     A B       C  D
+##  1: 1 A  0.8932  1
+##  2: 2 B  0.4633  2
+##  3: 1 C -0.2567  3
+##  4: 2 A -0.5529  4
+##  5: 1 B  0.8932  5
+##  6: 2 C  0.4633  6
+##  7: 1 A -0.2567  7
+##  8: 2 B -0.5529  8
+##  9: 1 C  0.8932  9
+## 10: 2 A  0.4633 10
+## 11: 1 B -0.2567 11
+## 12: 2 C -0.5529 12</pre>
+
+<pre class = 'prettyprint lang-r'>class(DT)</pre>
+
+<pre >## [1] &quot;data.table&quot; &quot;data.frame&quot;</pre>
+
+</article></slide><slide class=""><hgroup><h2>Selina: Syntax</h2></hgroup><article  id="selina-syntax">
+
+<p>DT[<span style="color:red">
+i</span>, <span style="color:green">
+j</span>, <span style="color:blue">
+by</span>] &quot;Take DT, subset rows using <span style="color:red">
+i</span>, then calculate <span style="color:green">
+j</span> grouped by <span style="color:blue">
+by</span>&quot;</p>
+
+</article></slide><slide class=""><hgroup><h2>Subsetting rows using i</h2></hgroup><article  id="subsetting-rows-using-i">
+
+<pre class = 'prettyprint lang-r'>DT[1:2] #select row 1st and 2nd row</pre>
+
+<pre >##    A B      C D
+## 1: 1 A 0.8932 1
+## 2: 2 B 0.4633 2</pre>
+
+<pre class = 'prettyprint lang-r'>DT[5:.N-1] #select 5th to penultimate row</pre>
+
+<pre >##    A B       C  D
+## 1: 2 A -0.5529  4
+## 2: 1 B  0.8932  5
+## 3: 2 C  0.4633  6
+## 4: 1 A -0.2567  7
+## 5: 2 B -0.5529  8
+## 6: 1 C  0.8932  9
+## 7: 2 A  0.4633 10
+## 8: 1 B -0.2567 11</pre>
+
+<pre class = 'prettyprint lang-r'>DT[B %in% c(&quot;A&quot;,&quot;C&quot;)] #select all rows that have value A or C in column B</pre>
+
+<pre >##    A B       C  D
+## 1: 1 A  0.8932  1
+## 2: 1 C -0.2567  3
+## 3: 2 A -0.5529  4
+## 4: 2 C  0.4633  6
+## 5: 1 A -0.2567  7
+## 6: 1 C  0.8932  9
+## 7: 2 A  0.4633 10
+## 8: 2 C -0.5529 12</pre>
+
+</article></slide><slide class=""><hgroup><h2>Manipulating on columns j:</h2></hgroup><article  id="manipulating-on-columns-j">
+
+<pre class = 'prettyprint lang-r'>DT[1:3,B] # returns a vector</pre>
+
+<pre >## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>DT[1:3,.(B)] # returns a data.table</pre>
+
+<pre >##    B
+## 1: A
+## 2: B
+## 3: C</pre>
+
+<pre class = 'prettyprint lang-r'>DT[1:3,.(B,C)] #returns a data.table</pre>
+
+<pre >##    B       C
+## 1: A  0.8932
+## 2: B  0.4633
+## 3: C -0.2567</pre>
+
+<ul>
+<li>.() is short for list()</li>
+<li>any expression allowed in j, even plot</li>
+<li>j is evaluated within the scope of DT&#8211;&gt; no $</li>
+<li>column names are treated like variables &#8211;&gt; no &quot;&quot;</li>
+</ul>
 
 </article></slide><slide class=""><hgroup><h2>Gregor</h2></hgroup><article  id="gregor">
 
@@ -217,11 +339,15 @@ dt[&quot;B6&quot;, mult=&quot;first&quot;]</pre>
 
 <h3>Chaining</h3>
 
-</article></slide><slide class=""><hgroup><h2>Selina</h2></hgroup><article  id="selina-6">
+</article></slide><slide class=""><hgroup><h2>Selina: Read and Write</h2></hgroup><article  id="selina-read-and-write">
 
-</article></slide><slide class=""><hgroup><h2>Selina</h2></hgroup><article  id="selina-7">
+<p>fread() - very fast compared to read.table or read.csv</p>
 
-</article></slide><slide class=""><hgroup><h2>Selina</h2></hgroup><article  id="selina-8"></article></slide>
+</article></slide><slide class=""><hgroup><h2>Selina: Read and write</h2></hgroup><article  id="selina-read-and-write-1">
+
+<p>fwrite() - enabled with parallelised fast writing</p>
+
+</article></slide><slide class=""><hgroup><h2>Selina: read and write</h2></hgroup><article  id="selina-read-and-write-2"></article></slide>
 
 
   <slide class="backdrop"></slide>
