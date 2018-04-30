@@ -1,7 +1,7 @@
 ---
 title: "data.table"
 author: Gregor and Selina
-date: May 2nd 2018
+date: Wednesday, May 2, 2018
 output: ioslides_presentation
 widescreen: true
 css: style.css
@@ -10,71 +10,72 @@ css: style.css
 
 
 ##What is data.table?
-- package released in 2008 by Matt Dowle
-main goals:
-- reduced programming time --> more natural syntax
-  - less variable name repetition
-  - most things can be done in a single line of code
-- reduced computing time
-  - fast aggreagation
-  - update by reference
+- package released in 2008 by Matt Dowle  
+
+__main goals__:  
+
+- reduced programming time --> more natural syntax  
+    - less variable name repetition  
+    - most things can be done in a single line of code  
+- reduced computing time  
+    - fast aggreagation  
+    - update by reference  
   
 ##Why to use it?
 
-  - faster read, write, data manipulation
-    - works with shallow copies and pointers (column names) and not with deep copies
-  
+- faster read, write & data manipulation  
+    - works with shallow copies & pointers (column names) not deep copies
 ```{r}
 library(nycflights13)
 library(plyr)
-library(data.table)
-```
-```{r}
+library(data.table)  
+  
 dt<-data.table(do.call("rbind", replicate(5, flights, simplify = FALSE)))
 system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_delay)))
 system.time(dt[,mean(dep_delay),.(origin,carrier,month)])
 ```
 
 
-##Selina: Comparison data.table and data.frame
-  - data.table inherits from df
-    -->every data.table is also a data.frame and can be used in the same way
-    -data.table is also a data.frame
-  - accepted as data.frame by other packages
-  - if called from a package that does not know how to deal with data.table syntax, the data.frame syntax is called
+##data.table vs. data.frame
+- data.table inherits from data.frame  
+    --> every data.table is also a data.frame and can be used in the same way  
+- accepted as data.frame by other packages  
+  
   
 ```{r}
-DT <- data.table(A = c(1L,2L), B = LETTERS[1:3], C = round(rnorm(4),4), D = 1:12)
-DT
-class(DT)
+dt2 <- data.table(A = c(1L,2L), B = LETTERS[1:3], C = round(rnorm(4),4), D = 1:12)
+class(dt2)
+head(dt2)
+
 ```
 
 
 
-##Selina: Syntax
-DT[<span style="color:red">i</span>, <span style="color:green">j</span>, <span style="color:blue">by</span>]
-"Take DT, subset rows using <span style="color:red">i</span>, then calculate <span style="color:green">j</span> grouped by <span style="color:blue">by</span>"
+##Basic Syntax of data.table
 
-
+__dt[<span style="color:red">i</span>, <span style="color:green">j</span>, <span style="color:blue">by</span>]__ 
+  
+"Take dt, subset rows using __<span style="color:red">i</span>__, then calculate __<span style="color:green">j</span>__ grouped by __<span style="color:blue">by</span>__"
 
 
 ##Subsetting rows using i
 ```{r}
-DT[1:2] #select row 1st and 2nd row
-DT[5:.N-1] #select 5th to penultimate row
-DT[B %in% c("A","C")] #select all rows that have value A or C in column B
+dt2[1:2] #select 1st and 2nd row (same as dt2[1:2,])
+dt2[10:(.N-1)] #select 9th to penultimate row
+dt2[B %in% c("A","C")] #select all rows that have value A or C in column B
 
 ```
 ##Manipulating on columns j:
 ```{r}
-DT[1:3,B] # returns a vector
-DT[1:3,.(B)] # returns a data.table
-DT[1:3,.(B,C)] #returns a data.table
+dt2[1:2,B] # returns a vector
+dt2[1:2,.(B)] # returns a data.table
+dt2[1:2,.(B,C)] #returns a data.table
+dt2[1:2, 2] #returns a data.table
 
 ```
 - .() is short for list()
-- any expression allowed in j, even plot
-- j is evaluated within the scope of DT--> no $
+- any expression allowed in j (even plot)
+- j is evaluated within the scope of dt --> no dt$colname=...
 - column names are treated like variables --> no ""
 
 
@@ -107,7 +108,7 @@ str(summ_tab)
 remember:
 ```{r, eval=F}
 ###<b>
-DT[i, j, by]
+dt[i, j, by]
 ###</b>
 ```
 
@@ -158,14 +159,25 @@ dt[c("UA", "AA"), mean(arr_delay, na.rm = T), by = carrier]
 ###Chaining
 
 
-##Selina: Read and Write
+##Read
+```{r, eval = F}
 fread()
-- very fast compared to read.table or read.csv
+```
+- similar to read.table but much faster
+- controls (sep, colClasses, ...) auto-detected
+- can read directly from web
+```{r, eval = F}
+mydata =  
+  fread("https://github.com/arunsrinivasan/satrdays-workshop/raw/master/flights_2014.csv")
+```
 
-##Selina: Read and write
+##Write
+```{r,eval=F}
 fwrite()
-- enabled with parallelised fast writing
+```
 
-##Selina: read and write
+- as write.csv but faster (2 s vs 1 min)
+- enabled with parallel computing
+
 
 
