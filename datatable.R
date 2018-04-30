@@ -7,8 +7,9 @@ str(weather)
 
 
 df<-rbind(flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights)
-dft<-as.data.table(flights)
+dft<-as.data.table(rbind(flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights))
 
 system.time(dfp<-ddply(df,.(month,carrier,origin),summarise,delay=mean(arr_delay)))
 
-ss
+system.time(dftt<-dft[,by=.(month,carrier,origin),.(mt=mean(arr_delay,na.rm=T))])
+

@@ -1,0 +1,168 @@
+---
+title: "Untitled"
+output: ioslides_presentation
+widescreen: true
+css: style.css
+
+---
+
+
+##What is data.table?
+- package released in 2008 by Matt Dowle
+main goals:
+- reduced programming time --> more natural syntax
+  - less variable name repetition
+  - most things can be done in a single line of code
+- reduced computing time
+  - fast aggreagation
+  - update by reference
+  
+##Why to use it?
+
+  - faster read, write, data manipulation
+    - works with shallow copies and pointers (column names) and not with deep copies
+  
+```{r}
+library(nycflights13)
+library(plyr)
+```
+```{r}
+dt<-data.table(rbind(flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights))
+system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_delay)))
+system.time(dt[,mean(dep_delay),.(origin,carrier,month)])
+```
+
+
+##Selina: Comparison data.table and data.frame
+  - data.table inherits from df
+    -->every data.table is also a data.frame and can be used in the same way
+    -data.table is also a data.frame
+  - accepted as data.frame by other packages
+  - if called from a package that does not know how to deal with data.table syntax, the data.frame syntax is called
+  
+```{r}
+DT <- data.table(A = c(1L,2L), B = LETTERS[1:3], C = round(rnorm(4),4), D = 1:12)
+DT
+class(DT)
+```
+
+
+
+##Selina: Syntax
+DT[<span style="color:red">i</span>, <span style="color:green">j</span>, <span style="color:blue">by</span>]
+"Take DT, subset rows using <span style="color:red">i</span>, then calculate <span style="color:green">j</span> grouped by <span style="color:blue">by</span>"
+
+
+
+
+##Subsetting rows using i
+```{r}
+DT[1:2] #select row 1st and 2nd row
+DT[5:.N-1] #select 5th to penultimate row
+DT[B %in% c("A","C")] #select all rows that have value A or C in column B
+
+```
+##Manipulating on columns j:
+```{r}
+DT[1:3,B] # returns a vector
+DT[1:3,.(B)] # returns a data.table
+DT[1:3,.(B,C)] #returns a data.table
+
+```
+- .() is short for list()
+- any expression allowed in j, even plot
+- j is evaluated within the scope of DT--> no $
+- column names are treated like variables --> no ""
+
+
+##Summarizing data.tables{.smaller}
+```{r}
+# dt <- data.table(flights)
+```
+delay statistics:
+```{r}
+dt[,.(mean_del = mean(arr_delay, na.rm=T), sd_del = sd(arr_delay, na.rm=T))]
+```
+returns a new data table:
+```{r}
+summ_tab <- dt[,.(mean_del = mean(arr_delay, na.rm=T), sd_del = sd(arr_delay, na.rm=T))]
+str(summ_tab)
+```
+
+
+##Summarizing data.tables cont'd{.smaller}
+
+more sophisticated delay statistics:
+
+```{r}
+summ_tab <- dt[,.(mean_del = mean(arr_delay, na.rm=T), 
+                  sd_del = sd(arr_delay, na.rm=T)),
+               by = .(carrier, month, origin)]
+str(summ_tab)
+```
+
+remember:
+```{r, eval=F}
+###<b>
+DT[i, j, by]
+###</b>
+```
+
+
+##Updating columns
+let's keep it simple
+```{r}
+dt[, arr_delay := round(arr_delay, 0)]
+
+dt[, c("arr_delay", "dep_delay") 
+   := list(round(arr_delay, 0),
+           round(dep_delay, 0))]
+```
+let's keep it even simpler
+```{r}
+dt[, day := NULL]
+
+dt[, c("year", "arr_time") := NULL]
+```
+
+
+
+
+##Keys{.smaller}
+the master coulmns of data.tables
+
+```{r}
+setkey(dt, carrier)
+
+head(dt["B6"])
+```
+
+
+
+##Keys cont'd{.smaller}
+```{r}
+sub_tab <- dt[c("UA", "AA")]
+
+dt["B6", mult="first"]
+```
+
+```{r}
+dt[c("UA", "AA"), mean(arr_delay, na.rm = T)]
+dt[c("UA", "AA"), mean(arr_delay, na.rm = T), by = carrier]
+```
+
+
+###Chaining
+
+
+##Selina: Read and Write
+fread()
+- very fast compared to read.table or read.csv
+
+##Selina: Read and write
+fwrite()
+- enabled with parallelised fast writing
+
+##Selina: read and write
+
+
