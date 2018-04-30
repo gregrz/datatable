@@ -2,34 +2,108 @@
 title: "Untitled"
 output: ioslides_presentation
 widescreen: true
+css: style.css
+
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+
+##Selina
+
+##Selina
+
+##Selina
+
+##Selina
+
+##Selina
+
+##Selina
+
+##Gregor
+```{r, include=FALSE}
+library(nycflights13)
+library(data.table)
+
 ```
-##Selina
+##Gregor{.smaller}
+```{r}
+# dt <- data.table(flights)
+```
+delay statistics:
+```{r}
+dt[,.(mean_del = mean(arr_delay, na.rm=T), sd_del = sd(arr_delay, na.rm=T))]
+```
+returns a new data table:
+```{r}
+summ_tab <- dt[,.(mean_del = mean(arr_delay, na.rm=T), sd_del = sd(arr_delay, na.rm=T))]
+str(summ_tab)
+```
 
-##Selina
 
-##Selina
+##Gregor{.smaller}
 
-##Selina
+more sophisticated delay statistics:
 
-##Selina
+```{r}
+summ_tab <- dt[,.(mean_del = mean(arr_delay, na.rm=T), 
+                  sd_del = sd(arr_delay, na.rm=T)),
+               by = .(carrier, month, origin)]
+str(summ_tab)
+```
 
-##Selina
+remember:
+```{r, eval=F}
+###<b>
+DT[i, j, by]
+###</b>
+```
 
-##Gregor
 
-##Gregor
+##Updating columns
+let's keep it simple
+```{r}
+dt[, arr_delay := round(arr_delay, 0)]
 
-##Gregor
+dt[, c("arr_delay", "dep_delay") 
+   := list(round(arr_delay, 0),
+           round(dep_delay, 0))]
+```
+let's keep it even simpler
+```{r}
+dt[, day := NULL]
 
-##Gregor
+dt[, c("year", "arr_time") := NULL]
+```
 
-##Gregor
 
-##Gregor
+
+
+##Keys{.smaller}
+the master coulmns of data.tables
+
+```{r}
+setkey(dt, carrier)
+
+head(dt["B6"])
+```
+
+
+
+##Keys cont'd{.smaller}
+```{r}
+sub_tab <- dt[c("UA", "AA")]
+
+dt["B6", mult="first"]
+```
+
+```{r}
+dt[c("UA", "AA"), mean(arr_delay, na.rm = T)]
+dt[c("UA", "AA"), mean(arr_delay, na.rm = T), by = carrier]
+```
+
+
+###Chaining
+
 
 ##Selina
 
