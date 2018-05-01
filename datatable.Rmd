@@ -5,14 +5,7 @@ date: Wednesday, May 2, 2018
 output: ioslides_presentation
 widescreen: true
 css: style.css
-widescreen: yes
 ---
-```{r include=F}
-
-knitr::knit_theme$set("edit-kwrite")
-```
-
-
 
 ##What is data.table?
 - package released in 2008 by Matt Dowle  
@@ -164,11 +157,12 @@ dt[c("UA", "AA"), mean(arr_delay, na.rm = T), by = carrier]
 
 
 ##Chaining operations and queries
-rept: summarising by
+rept: summarising ```by```
 ```{r}
 summ_tab <- dt[,.(mean_del = mean(arr_delay, na.rm=T)),
                by = .(carrier, month, origin)]
 ```
+
 
 "piping" another operation: select only the major delays
 ```{r hilang = 'sas'}
@@ -191,6 +185,24 @@ mydata =
   fread("https://github.com/arunsrinivasan/satrdays-workshop/raw/master/flights_2014.csv")
 ```
 
+##Read cont'd
+speeding things up:
+```{r, eval=F}
+library(paarallel)
+
+file.list <- list.files(pattern = "\\.txt$")
+ 
+cores <- detectCores()
+ 
+cl <- makeCluster(cores)
+
+dt <- do.call(rbind, parLapply(cl, X=file.list,
+              fun = function(x){
+                  return(data.table::fread(x, header = TRUE, fill = T))
+                  )})
+```
+
+
 ##Write
 ```{r,eval=F}
 fwrite()
@@ -198,3 +210,8 @@ fwrite()
 
 - as write.csv but faster (2 s vs 1 min)
 - enabled with parallel computing
+
+##
+
+
+and always remember your best friend ```?data.table```
