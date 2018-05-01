@@ -139,12 +139,12 @@ dt&lt;-data.table(do.call(&quot;rbind&quot;, replicate(5, flights, simplify = FA
 system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_delay)))</pre>
 
 <pre >##    user  system elapsed 
-##    1.07    0.24    1.32</pre>
+##   1.076   0.201   1.280</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(dt[,mean(dep_delay),.(origin,carrier,month)])</pre>
 
 <pre >##    user  system elapsed 
-##    0.29    0.00    0.30</pre>
+##   0.262   0.007   0.271</pre>
 
 </article></slide><slide class=""><hgroup><h2>data.table vs. data.frame</h2></hgroup><article  id="data.table-vs.-data.frame">
 
@@ -160,13 +160,13 @@ class(dt2)</pre>
 
 <pre class = 'prettyprint lang-r'>head(dt2)</pre>
 
-<pre >##    A B       C D
-## 1: 1 A -0.5799 1
-## 2: 2 B  1.4036 2
-## 3: 1 C -0.6323 3
-## 4: 2 A  0.1056 4
-## 5: 1 B -0.5799 5
-## 6: 2 C  1.4036 6</pre>
+<pre >##    A B      C D
+## 1: 1 A 0.5926 1
+## 2: 2 B 0.6855 2
+## 3: 1 C 0.2123 3
+## 4: 2 A 1.0390 4
+## 5: 1 B 0.5926 5
+## 6: 2 C 0.6855 6</pre>
 
 </article></slide><slide class=""><hgroup><h2>Basic Syntax of data.table</h2></hgroup><article  id="basic-syntax-of-data.table">
 
@@ -184,27 +184,27 @@ by</span></strong>&quot;</p>
 
 <pre class = 'prettyprint lang-r'>dt2[1:2] #select 1st and 2nd row (same as dt2[1:2,])</pre>
 
-<pre >##    A B       C D
-## 1: 1 A -0.5799 1
-## 2: 2 B  1.4036 2</pre>
+<pre >##    A B      C D
+## 1: 1 A 0.5926 1
+## 2: 2 B 0.6855 2</pre>
 
 <pre class = 'prettyprint lang-r'>dt2[10:(.N-1)] #select 9th to penultimate row</pre>
 
-<pre >##    A B       C  D
-## 1: 2 A  1.4036 10
-## 2: 1 B -0.6323 11</pre>
+<pre >##    A B      C  D
+## 1: 2 A 0.6855 10
+## 2: 1 B 0.2123 11</pre>
 
 <pre class = 'prettyprint lang-r'>dt2[B %in% c(&quot;A&quot;,&quot;C&quot;)] #select all rows that have value A or C in column B</pre>
 
-<pre >##    A B       C  D
-## 1: 1 A -0.5799  1
-## 2: 1 C -0.6323  3
-## 3: 2 A  0.1056  4
-## 4: 2 C  1.4036  6
-## 5: 1 A -0.6323  7
-## 6: 1 C -0.5799  9
-## 7: 2 A  1.4036 10
-## 8: 2 C  0.1056 12</pre>
+<pre >##    A B      C  D
+## 1: 1 A 0.5926  1
+## 2: 1 C 0.2123  3
+## 3: 2 A 1.0390  4
+## 4: 2 C 0.6855  6
+## 5: 1 A 0.2123  7
+## 6: 1 C 0.5926  9
+## 7: 2 A 0.6855 10
+## 8: 2 C 1.0390 12</pre>
 
 </article></slide><slide class=""><hgroup><h2>Manipulating on columns j:</h2></hgroup><article  id="manipulating-on-columns-j">
 
@@ -220,9 +220,9 @@ by</span></strong>&quot;</p>
 
 <pre class = 'prettyprint lang-r'>dt2[1:2,.(B,C)] #returns a data.table</pre>
 
-<pre >##    B       C
-## 1: A -0.5799
-## 2: B  1.4036</pre>
+<pre >##    B      C
+## 1: A 0.5926
+## 2: B 0.6855</pre>
 
 </article></slide><slide class=""><hgroup><h2>Manipulating on columns j:</h2></hgroup><article  id="manipulating-on-columns-j-1">
 
