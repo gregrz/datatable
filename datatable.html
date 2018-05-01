@@ -30,7 +30,11 @@
       // Author information
       presenters: [
             {
+<<<<<<< HEAD
         name:  'Gregor and Selina' ,
+=======
+        name:  'Selina &amp; Gregor' ,
+>>>>>>> gregor
         company: '',
         gplus: '',
         twitter: '',
@@ -124,15 +128,21 @@
 </article></slide><slide class=""><hgroup><h2>Why to use it?</h2></hgroup><article  id="why-to-use-it">
 
 <ul>
+<<<<<<< HEAD
 <li>faster read, write &amp; data manipulation
 
 <ul>
 <li>works with shallow copies &amp; pointers (column names) not deep copies</li>
 </ul></li>
+=======
+<li>faster read, write, data manipulation</li>
+<li>works with shallow copies and pointers (column names) and not with deep copies</li>
+>>>>>>> gregor
 </ul>
 
 <pre class = 'prettyprint lang-r'>library(nycflights13)
 library(plyr)
+<<<<<<< HEAD
 library(data.table)  
   
 dt&lt;-data.table(do.call(&quot;rbind&quot;, replicate(5, flights, simplify = FALSE)))
@@ -140,11 +150,30 @@ system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_del
 
 <pre >##    user  system elapsed 
 ##   1.076   0.201   1.280</pre>
+=======
+library(data.table)
+
+dt &lt;- as.data.table(
+  do.call(
+    rbind,
+    replicate(5, flights, simplify = F)
+  )
+)
+
+system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_delay)))</pre>
+
+<pre >##    user  system elapsed 
+##   1.102   0.225   1.328</pre>
+>>>>>>> gregor
 
 <pre class = 'prettyprint lang-r'>system.time(dt[,mean(dep_delay),.(origin,carrier,month)])</pre>
 
 <pre >##    user  system elapsed 
+<<<<<<< HEAD
 ##   0.262   0.007   0.271</pre>
+=======
+##   0.263   0.003   0.266</pre>
+>>>>>>> gregor
 
 </article></slide><slide class=""><hgroup><h2>data.table vs. data.frame</h2></hgroup><article  id="data.table-vs.-data.frame">
 
@@ -153,8 +182,29 @@ system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_del
 <li>accepted as data.frame by other packages</li>
 </ul>
 
+<<<<<<< HEAD
 <pre class = 'prettyprint lang-r'>dt2 &lt;- data.table(A = c(1L,2L), B = LETTERS[1:3], C = round(rnorm(4),4), D = 1:12)
 class(dt2)</pre>
+=======
+<pre class = 'prettyprint lang-r'>DT &lt;- data.table(A = c(1L,2L), B = LETTERS[1:3], C = round(rnorm(4),4), D = 1:12)
+DT</pre>
+
+<pre >##     A B       C  D
+##  1: 1 A -0.7442  1
+##  2: 2 B -0.9917  2
+##  3: 1 C -0.6599  3
+##  4: 2 A -0.0411  4
+##  5: 1 B -0.7442  5
+##  6: 2 C -0.9917  6
+##  7: 1 A -0.6599  7
+##  8: 2 B -0.0411  8
+##  9: 1 C -0.7442  9
+## 10: 2 A -0.9917 10
+## 11: 1 B -0.6599 11
+## 12: 2 C -0.0411 12</pre>
+
+<pre class = 'prettyprint lang-r'>class(DT)</pre>
+>>>>>>> gregor
 
 <pre >## [1] &quot;data.table&quot; &quot;data.frame&quot;</pre>
 
@@ -184,6 +234,7 @@ by</span></strong>&quot;</p>
 
 <pre class = 'prettyprint lang-r'>dt2[1:2] #select 1st and 2nd row (same as dt2[1:2,])</pre>
 
+<<<<<<< HEAD
 <pre >##    A B      C D
 ## 1: 1 A 0.5926 1
 ## 2: 2 B 0.6855 2</pre>
@@ -205,6 +256,35 @@ by</span></strong>&quot;</p>
 ## 6: 1 C 0.5926  9
 ## 7: 2 A 0.6855 10
 ## 8: 2 C 1.0390 12</pre>
+=======
+<pre >##    A B       C D
+## 1: 1 A -0.7442 1
+## 2: 2 B -0.9917 2</pre>
+
+<pre class = 'prettyprint lang-r'>DT[5:.N-1] #select 5th to penultimate row</pre>
+
+<pre >##    A B       C  D
+## 1: 2 A -0.0411  4
+## 2: 1 B -0.7442  5
+## 3: 2 C -0.9917  6
+## 4: 1 A -0.6599  7
+## 5: 2 B -0.0411  8
+## 6: 1 C -0.7442  9
+## 7: 2 A -0.9917 10
+## 8: 1 B -0.6599 11</pre>
+
+<pre class = 'prettyprint lang-r'>DT[B %in% c(&quot;A&quot;,&quot;C&quot;)] #select all rows that have value A or C in column B</pre>
+
+<pre >##    A B       C  D
+## 1: 1 A -0.7442  1
+## 2: 1 C -0.6599  3
+## 3: 2 A -0.0411  4
+## 4: 2 C -0.9917  6
+## 5: 1 A -0.6599  7
+## 6: 1 C -0.7442  9
+## 7: 2 A -0.9917 10
+## 8: 2 C -0.0411 12</pre>
+>>>>>>> gregor
 
 </article></slide><slide class=""><hgroup><h2>Manipulating on columns j:</h2></hgroup><article  id="manipulating-on-columns-j">
 
@@ -224,7 +304,14 @@ by</span></strong>&quot;</p>
 ## 1: A 0.5926
 ## 2: B 0.6855</pre>
 
+<<<<<<< HEAD
 </article></slide><slide class=""><hgroup><h2>Manipulating on columns j:</h2></hgroup><article  id="manipulating-on-columns-j-1">
+=======
+<pre >##    B       C
+## 1: A -0.7442
+## 2: B -0.9917
+## 3: C -0.6599</pre>
+>>>>>>> gregor
 
 <ul>
 <li>.() is short for list()</li>
@@ -235,7 +322,11 @@ by</span></strong>&quot;</p>
 
 </article></slide><slide class=""><hgroup><h2>Summarizing data.tables</h2></hgroup><article  id="summarizing-data.tables" class="smaller">
 
+<<<<<<< HEAD
 <pre class = 'prettyprint lang-r'># dt &lt;- data.table(flights)</pre>
+=======
+<pre class = 'prettyprint lang-r'>dt &lt;- data.table(flights)</pre>
+>>>>>>> gregor
 
 <p>delay statistics:</p>
 
@@ -345,7 +436,17 @@ dt[&quot;B6&quot;, mult=&quot;first&quot;]</pre>
 ## 1:      UA 3.5580111
 ## 2:      AA 0.3642909</pre>
 
-<h3>Chaining</h3>
+</article></slide><slide class=""><hgroup><h2>Chaining operations and queries</h2></hgroup><article  id="chaining-operations-and-queries">
+
+<p>rept: summarising by</p>
+
+<pre class = 'prettyprint lang-r'>summ_tab &lt;- dt[,.(mean_del = mean(arr_delay, na.rm=T)),
+               by = .(carrier, month, origin)]</pre>
+
+<p>&quot;piping&quot; another operation: select only the major delays</p>
+
+<pre class = 'prettyprint lang-r'>summ_tab &lt;- dt[,.(mean_del = mean(arr_delay, na.rm=T)),
+               by = .(carrier, month, origin)][mean_del &gt; 2]</pre>
 
 </article></slide><slide class=""><hgroup><h2>Read</h2></hgroup><article  id="read">
 
