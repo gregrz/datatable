@@ -70,9 +70,11 @@ dt2[B %in% c("A","C")] #select all rows that have value A or C in column B
 dt2[1:2,B] # returns a vector
 dt2[1:2,.(B)] # returns a data.table
 dt2[1:2,.(B,C)] #returns a data.table
-dt2[1:2, 2] #returns a data.table
-
 ```
+
+
+##Manipulating on columns j:
+
 - .() is short for list()
 - any expression allowed in j (even plot)
 - j is evaluated within the scope of dt --> no dt$colname=...
