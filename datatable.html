@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Untitled</title>
+  <title>data.table</title>
 
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -20,7 +20,7 @@
     var SLIDE_CONFIG = {
       // Slide settings
       settings: {
-                title: 'Untitled',
+                title: 'data.table',
                         useBuilds: true,
         usePrettify: true,
         enableSlideAreas: true,
@@ -29,6 +29,14 @@
 
       // Author information
       presenters: [
+            {
+        name:  'Selina &amp; Gregor' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
             ]
     };
   </script>
@@ -104,26 +112,30 @@
 </article></slide><slide class=""><hgroup><h2>Why to use it?</h2></hgroup><article  id="why-to-use-it">
 
 <ul>
-<li>faster read, write, data manipulation
-
-<ul>
+<li>faster read, write, data manipulation</li>
 <li>works with shallow copies and pointers (column names) and not with deep copies</li>
-</ul></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>library(nycflights13)
-library(plyr)</pre>
+library(plyr)
+library(data.table)
 
-<pre class = 'prettyprint lang-r'>dt&lt;-data.table(rbind(flights,flights,flights,flights,flights,flights,flights,flights,flights,flights,flights))
+dt &lt;- as.data.table(
+  do.call(
+    rbind,
+    replicate(5, flights, simplify = F)
+  )
+)
+
 system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_delay)))</pre>
 
 <pre >##    user  system elapsed 
-##    2.31    0.61    2.98</pre>
+##   1.102   0.225   1.328</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(dt[,mean(dep_delay),.(origin,carrier,month)])</pre>
 
 <pre >##    user  system elapsed 
-##    0.66    0.03    0.70</pre>
+##   0.263   0.003   0.266</pre>
 
 </article></slide><slide class=""><hgroup><h2>Selina: Comparison data.table and data.frame</h2></hgroup><article  id="selina-comparison-data.table-and-data.frame">
 
@@ -137,18 +149,18 @@ system.time(ddply(dt, .(origin, carrier, month), summarise, delay = mean(dep_del
 DT</pre>
 
 <pre >##     A B       C  D
-##  1: 1 A  0.8932  1
-##  2: 2 B  0.4633  2
-##  3: 1 C -0.2567  3
-##  4: 2 A -0.5529  4
-##  5: 1 B  0.8932  5
-##  6: 2 C  0.4633  6
-##  7: 1 A -0.2567  7
-##  8: 2 B -0.5529  8
-##  9: 1 C  0.8932  9
-## 10: 2 A  0.4633 10
-## 11: 1 B -0.2567 11
-## 12: 2 C -0.5529 12</pre>
+##  1: 1 A -0.7442  1
+##  2: 2 B -0.9917  2
+##  3: 1 C -0.6599  3
+##  4: 2 A -0.0411  4
+##  5: 1 B -0.7442  5
+##  6: 2 C -0.9917  6
+##  7: 1 A -0.6599  7
+##  8: 2 B -0.0411  8
+##  9: 1 C -0.7442  9
+## 10: 2 A -0.9917 10
+## 11: 1 B -0.6599 11
+## 12: 2 C -0.0411 12</pre>
 
 <pre class = 'prettyprint lang-r'>class(DT)</pre>
 
@@ -168,33 +180,33 @@ by</span>&quot;</p>
 
 <pre class = 'prettyprint lang-r'>DT[1:2] #select row 1st and 2nd row</pre>
 
-<pre >##    A B      C D
-## 1: 1 A 0.8932 1
-## 2: 2 B 0.4633 2</pre>
+<pre >##    A B       C D
+## 1: 1 A -0.7442 1
+## 2: 2 B -0.9917 2</pre>
 
 <pre class = 'prettyprint lang-r'>DT[5:.N-1] #select 5th to penultimate row</pre>
 
 <pre >##    A B       C  D
-## 1: 2 A -0.5529  4
-## 2: 1 B  0.8932  5
-## 3: 2 C  0.4633  6
-## 4: 1 A -0.2567  7
-## 5: 2 B -0.5529  8
-## 6: 1 C  0.8932  9
-## 7: 2 A  0.4633 10
-## 8: 1 B -0.2567 11</pre>
+## 1: 2 A -0.0411  4
+## 2: 1 B -0.7442  5
+## 3: 2 C -0.9917  6
+## 4: 1 A -0.6599  7
+## 5: 2 B -0.0411  8
+## 6: 1 C -0.7442  9
+## 7: 2 A -0.9917 10
+## 8: 1 B -0.6599 11</pre>
 
 <pre class = 'prettyprint lang-r'>DT[B %in% c(&quot;A&quot;,&quot;C&quot;)] #select all rows that have value A or C in column B</pre>
 
 <pre >##    A B       C  D
-## 1: 1 A  0.8932  1
-## 2: 1 C -0.2567  3
-## 3: 2 A -0.5529  4
-## 4: 2 C  0.4633  6
-## 5: 1 A -0.2567  7
-## 6: 1 C  0.8932  9
-## 7: 2 A  0.4633 10
-## 8: 2 C -0.5529 12</pre>
+## 1: 1 A -0.7442  1
+## 2: 1 C -0.6599  3
+## 3: 2 A -0.0411  4
+## 4: 2 C -0.9917  6
+## 5: 1 A -0.6599  7
+## 6: 1 C -0.7442  9
+## 7: 2 A -0.9917 10
+## 8: 2 C -0.0411 12</pre>
 
 </article></slide><slide class=""><hgroup><h2>Manipulating on columns j:</h2></hgroup><article  id="manipulating-on-columns-j">
 
@@ -212,9 +224,9 @@ by</span>&quot;</p>
 <pre class = 'prettyprint lang-r'>DT[1:3,.(B,C)] #returns a data.table</pre>
 
 <pre >##    B       C
-## 1: A  0.8932
-## 2: B  0.4633
-## 3: C -0.2567</pre>
+## 1: A -0.7442
+## 2: B -0.9917
+## 3: C -0.6599</pre>
 
 <ul>
 <li>.() is short for list()</li>
@@ -223,9 +235,7 @@ by</span>&quot;</p>
 <li>column names are treated like variables &#8211;&gt; no &quot;&quot;</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Gregor</h2></hgroup><article  id="gregor">
-
-</article></slide><slide class=""><hgroup><h2>Gregor</h2></hgroup><article  id="gregor-1" class="smaller">
+</article></slide><slide class=""><hgroup><h2>Summarizing data.tables</h2></hgroup><article  id="summarizing-data.tables" class="smaller">
 
 <pre class = 'prettyprint lang-r'>dt &lt;- data.table(flights)</pre>
 
@@ -246,7 +256,7 @@ str(summ_tab)</pre>
 ##  $ sd_del  : num 44.6
 ##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</pre>
 
-</article></slide><slide class=""><hgroup><h2>Gregor</h2></hgroup><article  id="gregor-2" class="smaller">
+</article></slide><slide class=""><hgroup><h2>Summarizing data.tables cont&#39;d</h2></hgroup><article  id="summarizing-data.tables-contd" class="smaller">
 
 <p>more sophisticated delay statistics:</p>
 
@@ -337,7 +347,17 @@ dt[&quot;B6&quot;, mult=&quot;first&quot;]</pre>
 ## 1:      UA 3.5580111
 ## 2:      AA 0.3642909</pre>
 
-<h3>Chaining</h3>
+</article></slide><slide class=""><hgroup><h2>Chaining operations and queries</h2></hgroup><article  id="chaining-operations-and-queries">
+
+<p>rept: summarising by</p>
+
+<pre class = 'prettyprint lang-r'>summ_tab &lt;- dt[,.(mean_del = mean(arr_delay, na.rm=T)),
+               by = .(carrier, month, origin)]</pre>
+
+<p>&quot;piping&quot; another operation: select only the major delays</p>
+
+<pre class = 'prettyprint lang-r'>summ_tab &lt;- dt[,.(mean_del = mean(arr_delay, na.rm=T)),
+               by = .(carrier, month, origin)][mean_del &gt; 2]</pre>
 
 </article></slide><slide class=""><hgroup><h2>Selina: Read and Write</h2></hgroup><article  id="selina-read-and-write">
 
