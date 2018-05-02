@@ -3,24 +3,12 @@
   font-size: 2.5em;
 }
 
-.reveal scode {
-  font-size: 1pt;
-}
-
-/*#small_font {
-   font-size: 10pt;
-}*/
-
-
-slides > slide.backdrop {
+/*slides > slide.backdrop {
   background: none !important;
   background: black;
   color: white !important;
-}
+}*/
 
-h1 > h1.backdrop {
-  color: white !important;
-}
 
 .reveal section p {
   color: blue;
@@ -81,11 +69,12 @@ h1 > h1.backdrop {
 .reveal code {
   overflow: visible;
   max-height: none;
+
 }
 
+
 .reveal code.r {
-  /*background-color: #F8F8F8;*/
-  background-color: #DCDCDC !important;
+  background-color: #F8F8F8;
 }
 
 .reveal code.cpp {
