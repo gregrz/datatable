@@ -79,11 +79,15 @@ dt2[1:2,.(B,C)] #returns a data.table
 - j is evaluated within the scope of dt --> no dt$colname=...
 - column names are treated like variables --> no ""
 
-
 ##Summarizing data.tables{.smaller}
 ```{r}
 dt <- data.table(flights)
+
+str(dt)
 ```
+
+##Summarizing data.tables cont'd{.smaller}
+
 delay statistics:
 ```{r}
 dt[,.(mean_del = mean(arr_delay, na.rm=T), sd_del = sd(arr_delay, na.rm=T))]
